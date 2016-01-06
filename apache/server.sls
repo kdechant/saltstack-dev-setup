@@ -18,6 +18,10 @@
       - pkg: {{ apache_package }}
       - file: {{ apache_conf }}
       - file: /etc/php5/apache2/php.ini  # currently only works on Debian-based systems; will error on RedHat
+      {% if grains['os_family'] == 'Debian' %}
+      - file: {{ apache_conf_dir }}/sites-enabled/vhosts-wildcard.conf
+      - cmd: enable-apache-modules
+      {% endif %}
 
 {{ apache_conf }}:
   file.managed:
@@ -43,6 +47,11 @@
 {{ apache_conf_dir }}/sites-enabled/vhosts-wildcard.conf:
   file.symlink:
     - target: {{ apache_conf_dir }}/sites-available/vhosts-wildcard.conf
+
+enable-apache-modules:
+  cmd.run:
+    - name: 'a2enmod headers php5 rewrite ssl vhost_alias'
+
 {% endif %}
 
 # TODO: generate SSL certs for the server, using https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.tls.html

@@ -17,4 +17,10 @@ tools:
     - group: {{grains['id']}}
     - mode: 644
 
+# Create .bashrc file if it doesn't exist
+/home/{{grains['id']}}/.bashrc:
+  file.managed:
+    - user: {{grains['id']}}
+    - group: {{grains['id']}}
+    - mode: 644
 

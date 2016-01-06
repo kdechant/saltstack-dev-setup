@@ -28,7 +28,7 @@ php:
 # TODO: Add support for PHP 7
 
 # Install PHP itself
-  pkg.latest:
+  pkg.installed:
     {% if grains['os_family'] == 'Debian' %}
     - fromrepo: ppa:ondrej/php5-5.6
     {% endif %}
@@ -82,5 +82,34 @@ php-opcache-enable:
 
 {% endif %}
 
+# Install Composer (from https://docs.saltstack.com/en/latest/ref/states/all/salt.states.composer.html)
+get-composer:
+  cmd.run:
+    - name: 'CURL=`which curl`; $CURL -sS https://getcomposer.org/installer | php'
+    - unless: test -f /usr/local/bin/composer
+    - cwd: /root/
+    - require:
+      - pkg: php
+
+install-composer:
+  cmd.wait:
+    - name: mv /root/composer.phar /usr/local/bin/composer
+    - cwd: /root/
+    - watch:
+      - cmd: get-composer
+
+install-drush:
+  cmd.run:
+    - name: 'composer global require drush/drush'
+    - unless: test -f ~/.composer/vendor/drush/drush/drush
+    - require:
+      - cmd: install-composer
+
+add-drush-to-path:
+  file.append:
+    - name: '/home/{{grains['id']}}/.bashrc'
+    # TODO: the above line needs to be added to .bash_profile on OSX
+    - text: 'export PATH="$HOME/.composer/vendor/bin:$PATH"'
+    - unless: which drush
 
 

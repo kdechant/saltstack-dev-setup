@@ -1,7 +1,8 @@
 include:
-  - apache.server
-  - mysql.server
-  - php
-  - python
   - tools
+  - apache.server
+#  - mysql.server
+  - php
+#  - python
+#  - ruby
 
