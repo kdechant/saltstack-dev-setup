@@ -9,19 +9,10 @@ php:
 
 # Some systems need an additional package repo to install newer versions of PHP.
 
-# Note: Adding a PPA will malfunction on Linux Mint. Commenting this out for now.
-# See https://github.com/saltstack/salt/pull/22971 for details.
-# Until then we'll use the default version of PHP5.
-# To upgrade PHP manually, run 'sudo add-apt-repository ppa:ondrej/php5-5.6' from the command line,
-# then run salt-call again
-
-  {% if grains['os_family'] == 'Debian' and grains['os'] != 'Mint' %}
+  {% if grains['os_family'] == 'Debian' %}
   pkgrepo.managed:
-    - humanname: Ondrej PHP 5.6
-    - name: ppa:ondrej/php5-5_6
-    - ppa: ondrej/php5-5.6
-    - file: /etc/apt/sources.list.d/ondrej-php5-5_6-trusty.list
-    - refresh_db: true
+    - name: deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu wily main
+    - dist: wily
   {% endif %}
 
 # TODO: Add IUS or Webtatic on CentOS
