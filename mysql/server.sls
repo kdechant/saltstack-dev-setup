@@ -1,14 +1,31 @@
+# Detect OS family which determines the name of the Apache package
+{% if grains['os_family'] == 'RedHat' %}
+  {% set mariadb_package = 'mariadb' %}
+  {% set mariadb_service = 'mariadb' %}
+{% elif grains['os_family'] == 'Debian' %}
+  {% set mariadb_package = 'mariadb-client' %}
+  {% set mariadb_service = 'mysql' %}
+{% endif %}
+
 mariadb:
-  pkg.latest: 
+  pkg.latest:
     - names:
-      - mariadb
+      - {{ mariadb_package }}
       - mariadb-server
   service.running:
     - names:
-      - mariadb
+      - {{ mariadb_service }}
     - watch:
-      - pkg: mariadb
+      - pkg: {{ mariadb_package }}
       - pkg: mariadb-server
-#      - file: /etc/my.cnf
+      - file: /etc/mysql/my.cnf
 #      - user: apache
+
+/etc/mysql/my.cnf:
+  file.managed:
+    - source: salt://mysql/my.cnf
+    - user: root
+    - group: root
+    - mode: 644
+
 

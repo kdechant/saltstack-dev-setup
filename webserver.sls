@@ -3,4 +3,5 @@ include:
   - mysql.server
   - php
   - python
+  - tools
 
