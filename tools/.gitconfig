@@ -1,0 +1,8 @@
+[user]
+	name = Keith Dechant
+	email = keith@metaltoad.com
+[core]
+	autocrlf = input
+[push]
+        default = simple
+
