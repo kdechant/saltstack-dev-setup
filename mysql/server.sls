@@ -12,6 +12,7 @@ mariadb:
     - names:
       - {{ mariadb_package }}
       - mariadb-server
+      - libmariadbclient-dev
   service.running:
     - names:
       - {{ mariadb_service }}

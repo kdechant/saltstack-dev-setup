@@ -6,7 +6,7 @@
 {% elif grains['os_family'] == 'Debian' %}
   {% set apache_package = 'apache2' %}
   {% set apache_conf_dir = '/etc/apache2' %}
-  {% set apache_conf = '/etc/apache2/conf/apache2.conf' %}
+  {% set apache_conf = '/etc/apache2/apache2.conf' %}
   {% set websites_root = '/home/' ~ grains['id'] ~ '/sites' %}
 {% endif %}
 
@@ -23,19 +23,30 @@
       - cmd: enable-apache-modules
       {% endif %}
 
+# Debian/Ubuntu/Mint specific Apache setup
+{% if grains['os_family'] == 'Debian' %}
+
+# Main apache config file - apache2.conf
 {{ apache_conf }}:
   file.managed:
-    - source: salt://apache/httpd.conf
+    - source: salt://apache/ubuntu/apache2.conf
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+
+{{ apache_conf_dir }}/envvars:
+  file.managed:
+    - source: salt://apache/ubuntu/envvars
     - user: root
     - group: root
     - mode: 644
     - template: jinja
 
 # Wildcard virtual hosts. Currently only supported on Debian. Would be easy to implement on OSX.
-{% if grains['os_family'] == 'Debian' %}
 {{ apache_conf_dir }}/sites-available/vhosts-wildcard.conf:
   file.managed:
-    - source: salt://apache/vhosts-wildcard.conf
+    - source: salt://apache/ubuntu/vhosts-wildcard.conf
     - user: root
     - group: root
     - mode: 644
@@ -51,6 +62,20 @@
 enable-apache-modules:
   cmd.run:
     - name: 'a2enmod headers php5 rewrite ssl vhost_alias'
+
+{% elif grains['os_family'] == 'RedHat' %}
+# RedHat-specific Apache config
+
+# Main apache config file - httpd.conf
+{{ apache_conf }}:
+  file.managed:
+    - source: salt://apache/redhat/httpd.conf
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+
+# TODO: RedHat wildcard vhost setup
 
 {% endif %}
 
