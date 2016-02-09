@@ -11,8 +11,10 @@ php:
 
   {% if grains['os_family'] == 'Debian' %}
   pkgrepo.managed:
-    - name: deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu wily main
-    - dist: wily
+    - name: deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu trusty main
+    - dist: trusty
+    - require_in:
+      pkg: php5
   {% endif %}
 
 # TODO: Add IUS or Webtatic on CentOS
@@ -20,18 +22,18 @@ php:
 
 # Install PHP itself
   pkg.installed:
-    {% if grains['os_family'] == 'Debian' %}
-    - fromrepo: ppa:ondrej/php5-5.6
-    {% endif %}
     - names:
       {% if grains['os_family'] == 'Debian' %}
       # PHP extensions like devel, pdo, opcache are included in php5 core on Debian
       - php5
+      - php5-common
       - php5-cli
+      - php5-curl
       - php5-gd
       - php5-memcached
       - php5-mysqlnd
       - php5-xdebug
+      - libapache2-mod-php5
       {% elif grains['os'] == 'Fedora'%}
       - php
       - php-cli
@@ -43,7 +45,8 @@ php:
       - php-mysqlnd
       - php-opcache
       - php-pdo
-     {% endif %}
+      {% endif %}
+      - memcached
 
 # Manage PHP config files. These vary in location and structure by OS/distro.
 

@@ -5,6 +5,7 @@ ruby:
     - names:
 {% if grains['os_family'] == 'Debian' %}
       - ruby2.0
+      - ruby2.0-dev
 {% elif grains['os_family'] == 'RedHat' %}
       - ruby
       - rubygems

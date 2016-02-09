@@ -2,6 +2,7 @@ python:
   pkg.latest:
     - names:
       - python
+      - python-dev
       - python-pip
       - python3
       - python3-pip
