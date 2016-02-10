@@ -8,9 +8,14 @@ python:
       - python3-pip
       - python3-dev
 {% if grains['os_family'] == 'Debian' %}
-      # libssl-dev is needed to compile the mysqlclient pip module
+      # libssl-dev is needed to compile the mysqlclient package
       - libssl-dev
       - libapache2-mod-wsgi-py3
+      # libraries needed to install the Pillow package
+      - libjpeg8
+      - libjpeg62-dev
+      - libfreetype6
+      - libfreetype6-dev
 {% elif grains['os_family'] == 'RedHat' %}
       # openssl-devel is needed to compile the mysqlclient pip module
       - openssl-devel
@@ -24,5 +29,6 @@ pip_modules:
     - names:
       - Django
       - mysqlclient
+      - virtualenv
     - require:
       - pkg: python3-dev
