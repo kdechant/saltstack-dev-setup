@@ -7,6 +7,7 @@ tools:
       - nano
       - wget
       - unzip
+      - dnsmasq
 
 # Manage global Git config.
 
@@ -22,5 +23,13 @@ tools:
   file.managed:
     - user: {{grains['id']}}
     - group: {{grains['id']}}
+    - mode: 644
+
+# Dnsmasq config file
+/etc/dnsmasq.d/dev-domains:
+  file.managed:
+    - source: salt://tools/dnsmasq-dev-domains
+    - user: root
+    - group: root
     - mode: 644
 

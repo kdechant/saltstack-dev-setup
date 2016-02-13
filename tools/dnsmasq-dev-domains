@@ -1,0 +1,4 @@
+# this makes all *.dev domains point to localhost
+
+address=/.dev/127.0.0.1
+
