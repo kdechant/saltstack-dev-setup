@@ -32,7 +32,7 @@ net-ssh:
 
 capistrano:
   gem.installed:
-    - version: '= 2.15.6'
+    - version: '"=2.15.6"'
     - require:
       - pkg: ruby
       - gem: net-ssh

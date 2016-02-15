@@ -74,6 +74,12 @@ php-opcache-enable:
   cmd.run:
     - name: php5enmod opcache
 
+enable-php-apache-modules:
+  cmd.run:
+    - name: 'a2enmod php5'
+    - require:
+      - pkg: php
+
 {% endif %}
 
 # Install Composer (from https://docs.saltstack.com/en/latest/ref/states/all/salt.states.composer.html)

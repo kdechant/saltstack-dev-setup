@@ -10,19 +10,6 @@
   {% set websites_root = '/home/' ~ grains['id'] ~ '/sites' %}
 {% endif %}
 
-{{ apache_package }}:
-  pkg.latest:
-    - name: {{ apache_package }}
-  service.running:
-    - watch:
-      - pkg: {{ apache_package }}
-      - file: {{ apache_conf }}
-      - file: /etc/php5/apache2/php.ini  # currently only works on Debian-based systems; will error on RedHat
-      {% if grains['os_family'] == 'Debian' %}
-      - file: {{ apache_conf_dir }}/sites-enabled/vhosts-wildcard.conf
-      - cmd: enable-apache-modules
-      {% endif %}
-
 # Debian/Ubuntu/Mint specific Apache setup
 {% if grains['os_family'] == 'Debian' %}
 
@@ -61,7 +48,7 @@
 
 enable-apache-modules:
   cmd.run:
-    - name: 'a2enmod headers php5 rewrite ssl vhost_alias'
+    - name: 'a2enmod headers rewrite ssl vhost_alias'
 
 {% elif grains['os_family'] == 'RedHat' %}
 # RedHat-specific Apache config
@@ -78,6 +65,19 @@ enable-apache-modules:
 # TODO: RedHat wildcard vhost setup
 
 {% endif %}
+
+{{ apache_package }}:
+  pkg.latest:
+    - name: {{ apache_package }}
+  service.running:
+    - watch:
+      - pkg: {{ apache_package }}
+      - file: {{ apache_conf }}
+      - file: /etc/php5/apache2/php.ini  # currently only works on Debian-based systems; will error on RedHat
+      {% if grains['os_family'] == 'Debian' %}
+      - file: {{ apache_conf_dir }}/sites-enabled/vhosts-wildcard.conf
+      - cmd: enable-apache-modules
+      {% endif %}
 
 # TODO: generate SSL certs for the server, using https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.tls.html
 
