@@ -43,6 +43,18 @@ capistrano-ext:
       - pkg: ruby
       - gem: capistrano
 
+capistrano-deploy-strategy-archive:
+  gem.installed:
+    - require:
+      - pkg: ruby
+      - gem: capistrano
+
+capistrano-deploy-scm-passthrough:
+  gem.installed:
+    - require:
+      - pkg: ruby
+      - gem: capistrano
+
 bundler:
   gem.installed:
     - require:
