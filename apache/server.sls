@@ -48,7 +48,7 @@
 
 enable-apache-modules:
   cmd.run:
-    - name: 'a2enmod headers rewrite ssl vhost_alias'
+    - name: 'a2enmod headers proxy proxy_http rewrite ssl vhost_alias'
 
 {% elif grains['os_family'] == 'RedHat' %}
 # RedHat-specific Apache config
