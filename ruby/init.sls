@@ -4,17 +4,17 @@ ruby:
   pkg.latest:
     - names:
 {% if grains['os_family'] == 'Debian' %}
-      - ruby2.0
-      - ruby2.0-dev
+      - ruby
+      - ruby-dev
 {% elif grains['os_family'] == 'RedHat' %}
       - ruby
       - rubygems
       - libopenssl-ruby
 {% endif %}
 
-# Ubuntu/Mint mangle the Ruby installer and make the default 1.9.3.
+# Older Ubuntu/Mint mangle the Ruby installer and make the default 1.9.3.
 # Need to fix some symlinks before the gems will install.
-{% if grains['os'] == 'Ubuntu' or grains['os'] == 'Mint' %}
+{% if grains['oscodename'] == 'trusty' or grains['oscodename'] == 'rosa' %}
 /usr/bin/ruby:
   file.symlink:
     - target: '/usr/bin/ruby2.0'
@@ -32,7 +32,7 @@ net-ssh:
 
 capistrano:
   gem.installed:
-    - version: '"=2.15.6"'
+    - version: '=2.15.6'
     - require:
       - pkg: ruby
       - gem: net-ssh

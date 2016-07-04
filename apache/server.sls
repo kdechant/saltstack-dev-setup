@@ -73,7 +73,7 @@ enable-apache-modules:
     - watch:
       - pkg: {{ apache_package }}
       - file: {{ apache_conf }}
-      - file: /etc/php5/apache2/php.ini  # currently only works on Debian-based systems; will error on RedHat
+      - file: /etc/php/7.0/apache2/php.ini  # currently only works on Debian-based systems; will error on RedHat
       {% if grains['os_family'] == 'Debian' %}
       - file: {{ apache_conf_dir }}/sites-enabled/vhosts-wildcard.conf
       - cmd: enable-apache-modules

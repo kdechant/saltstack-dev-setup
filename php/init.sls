@@ -2,7 +2,7 @@
 {% if grains['os_family'] == 'RedHat' %}
   {% set php_conf_dir = '/etc/php' %}
 {% elif grains['os_family'] == 'Debian' %}
-  {% set php_conf_dir = '/etc/php5' %}
+  {% set php_conf_dir = '/etc/php/7.0' %}
 {% endif %}
 
 php:
@@ -10,30 +10,39 @@ php:
 # Some systems need an additional package repo to install newer versions of PHP.
 
   {% if grains['os_family'] == 'Debian' %}
+    {% if grains['oscodename'] == 'xenial' or grains['oscodename'] == 'sarah' %}
+  # Ubuntu 16.04 or Mint 18
   pkgrepo.managed:
-    - name: deb http://ppa.launchpad.net/ondrej/php5-5.6/ubuntu trusty main
+    - name: deb http://ppa.launchpad.net/ondrej/php/ubuntu xenial main
+    - dist: xenial
+    - require_in:
+      pkg: php7.0
+    {% else %}
+  # Mint 17
+  pkgrepo.managed:
+    - name: deb http://ppa.launchpad.net/ondrej/php/ubuntu trusty main
     - dist: trusty
     - require_in:
       pkg: php5
+    {% endif %}
   {% endif %}
 
 # TODO: Add IUS or Webtatic on CentOS
-# TODO: Add support for PHP 7
 
 # Install PHP itself
   pkg.installed:
     - names:
       {% if grains['os_family'] == 'Debian' %}
       # PHP extensions like devel, pdo, opcache are included in php5 core on Debian
-      - php5
-      - php5-common
-      - php5-cli
-      - php5-curl
-      - php5-gd
-      - php5-memcached
-      - php5-mysqlnd
-      - php5-xdebug
-      - libapache2-mod-php5
+      - php7.0
+      - php7.0-common
+      - php7.0-cli
+      - php7.0-curl
+      - php7.0-gd
+      - php7.0-memcached
+      - php7.0-mysqlnd
+      - php7.0-xdebug
+      - libapache2-mod-php7.0
       {% elif grains['os'] == 'Fedora'%}
       - php
       - php-cli
@@ -72,11 +81,11 @@ php:
 
 php-opcache-enable:
   cmd.run:
-    - name: php5enmod opcache
+    - name: phpenmod opcache
 
 enable-php-apache-modules:
   cmd.run:
-    - name: 'a2enmod php5'
+    - name: 'a2enmod php7.0'
     - require:
       - pkg: php
 

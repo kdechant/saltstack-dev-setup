@@ -23,12 +23,3 @@ python:
       - python3-mod_wsgi
 {% endif %}
 
-pip_modules:
-  pip.installed:
-    - bin_env: /usr/bin/pip3
-    - names:
-      - Django
-      - mysqlclient
-      - virtualenv
-    - require:
-      - pkg: python3-dev
